@@ -35,10 +35,9 @@ public class EmprestimoService {
 	public String criarEmprestimo(String identificador, Integer qtdParcelas, Double valorParcela,
 			Double valorEmprestimo, Pessoa pessoa) {
 
-		if (!this.validarIdentificador(identificador, pessoa.getTipoIdentificador().getDescricao())) {
+		if (!this.validarIdentificador(identificador, pessoa)) {
 			return "idententificador inválido";
 		}
-
 		if (this.validarLimitesEmprestimo(pessoa, qtdParcelas, valorParcela, valorEmprestimo)) {
 			return erroLimite;
 		}
@@ -77,20 +76,22 @@ public class EmprestimoService {
 
 	}
 
-	private Boolean validarIdentificador(String identificador, String tipoIdentificador) {
+	private Boolean validarIdentificador(String identificador, Pessoa pessoa) {
 		ValidaIdentificadorUtil validadorIdentificadorUtil = new ValidaIdentificadorUtil();
 
-		if (TipoIdentificadorEnum.PESSOAFISICA.getDescricao().equals(tipoIdentificador)) {
-			return validadorIdentificadorUtil.validarCpf(identificador);
-		}
-		if (TipoIdentificadorEnum.PESSOAJURIDICA.getDescricao().equals(tipoIdentificador)) {
-			return validadorIdentificadorUtil.validarCnpj(identificador);
-		}
-		if (TipoIdentificadorEnum.ESTUDANTEUNIVERSITARIO.getDescricao().equals(tipoIdentificador)) {
-			return validadorIdentificadorUtil.validarEstudante(identificador);
-		}
-		if (TipoIdentificadorEnum.APOSENTADO.getDescricao().equals(tipoIdentificador)) {
-			return validadorIdentificadorUtil.validarAposentado(identificador);
+		if(pessoa != null && pessoa.getTipoIdentificador() != null) {
+			if (TipoIdentificadorEnum.PESSOAFISICA.getDescricao().equals(pessoa.getTipoIdentificador().getDescricao())) {
+				return validadorIdentificadorUtil.validarCpf(identificador);
+			}
+			if (TipoIdentificadorEnum.PESSOAJURIDICA.getDescricao().equals(pessoa.getTipoIdentificador().getDescricao())) {
+				return validadorIdentificadorUtil.validarCnpj(identificador);
+			}
+			if (TipoIdentificadorEnum.ESTUDANTEUNIVERSITARIO.getDescricao().equals(pessoa.getTipoIdentificador().getDescricao())) {
+				return validadorIdentificadorUtil.validarEstudante(identificador);
+			}
+			if (TipoIdentificadorEnum.APOSENTADO.getDescricao().equals(pessoa.getTipoIdentificador().getDescricao())) {
+				return validadorIdentificadorUtil.validarAposentado(identificador);
+			}			
 		}
 		return Boolean.FALSE;
 
